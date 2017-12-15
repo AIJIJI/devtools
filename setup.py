@@ -4,7 +4,7 @@
 from setuptools import setup
 
 setup(
-    name='devtools',
+    name='AIJIdevtools',
     version='0.0.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',

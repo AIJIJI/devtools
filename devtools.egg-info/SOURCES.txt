@@ -1,8 +1,0 @@
-setup.py
-devtools/__init__.py
-devtools/char.py
-devtools/linux.py
-devtools.egg-info/PKG-INFO
-devtools.egg-info/SOURCES.txt
-devtools.egg-info/dependency_links.txt
-devtools.egg-info/top_level.txt
