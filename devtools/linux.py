@@ -1,3 +1,4 @@
+# coding: utf8
 from subprocess import Popen, PIPE
 from .char import tostr
 
