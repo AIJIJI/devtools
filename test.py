@@ -1,3 +1,3 @@
 from devtools.linux import lxrun
-a = lxrun('ls')
+a = lxrun('dmidecode', err=True)
 print(a)
