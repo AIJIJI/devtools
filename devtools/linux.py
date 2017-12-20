@@ -1,12 +1,13 @@
 # coding: utf8
 from subprocess import Popen, PIPE
-from format import tostr
+from devtools.format import tostr
+import os
 
 __all__ = ['lxrun']
 
 def lxrun(cmd, err=False, daemon=False):
     if daemon is True:
-        Popen(cmd, shell=True)
+        Popen(cmd, shell=True, stdout=open(os.devnull, 'w'))
         return
         
     res = None

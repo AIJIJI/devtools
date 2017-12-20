@@ -1,4 +1,4 @@
-from _linux import lxrun
-from _colored import Colored
+from devtools.linux import lxrun
+from devtools._colored import Colored
 
 
