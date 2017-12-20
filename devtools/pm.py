@@ -5,6 +5,7 @@
 import re
 from devtools.linux import lxrun
 
+__all__ = ['get_pid', 'get_command', 'kill', 'reboot']
 
 # Internal
 def _get_pid_by_port(port):
@@ -36,8 +37,14 @@ def get_pid(pattern=None, port=None, regex=False):
             pid = re.split(' +', res[0])[1]
             return pid
 
-def get_command(pid):
+def get_proc(pid):
     res = lxrun('ps p {0}| grep {0}'.format(pid)).strip()
+    if not res:
+        return None
+    return res
+
+def get_command(pid):
+    res = get_proc(pid)
     if not res:
         return None
     res = re.split(' +', res, 4) 
@@ -56,10 +63,16 @@ def reboot(pid):
 
 if __name__ == '__main__':
     print('Start testing.')
+
+    for pid in [0,1,2,100]:
+        print(get_proc(pid))
+    print('-' * 20)
+    
     port = [12346, 0, 1, 80]
     for p in port:
         print('port at {0} is '.format(p) + str( _get_pid_by_port(p)))
-    print('Pid of this is ' + get_pid(pattern='python.*ps\.py'))
+    
+    print('Pid of this is ' + get_pid(pattern='python.*pm\.py'))
     print('-'*20)
     pid = get_pid(port=12346)
     print('origin pid =', pid)

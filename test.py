@@ -1,6 +1,6 @@
 from unittest import TestCase, main 
 from devtools.linux import lxrun
-from devtools import strtodict
+from devtools.format import strtodict
 
 
 class MainTestCase(TestCase):
