@@ -2,7 +2,13 @@
 from subprocess import Popen, PIPE
 from .char import tostr
 
-def lxrun(cmd, err=False):
+__all__ = ['lxrun']
+
+def lxrun(cmd, err=False, daemon=False):
+    if daemon is True:
+        Popen(cmd, shell=True)
+        return
+        
     res = None
     p =  Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = p.communicate()
