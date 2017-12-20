@@ -1,6 +1,6 @@
 # coding: utf8
 from subprocess import Popen, PIPE
-from .char import tostr
+from format import tostr
 
 __all__ = ['lxrun']
 

@@ -14,6 +14,7 @@ def tobytes(sth):
     elif isinstance(sth, str):
         return sth.encode
     else:
+        return bytes(sth)
 
 
 def toaddr(strs):
