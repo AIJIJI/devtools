@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='AIJIdevtools',
-    version='0.1.0',
+    version='0.2.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
