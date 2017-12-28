@@ -5,7 +5,7 @@
 import re
 from devtools.linux import lxrun
 
-__all__ = ['get_pid', 'get_command', 'kill', 'reboot']
+__all__ = ['getpid', 'get_command', 'kill', 'reboot']
 
 # Internal
 def _get_pid_by_port(port):
