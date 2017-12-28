@@ -23,19 +23,31 @@ def _get_pid_by_port(port):
             return None
 
 
-def get_pid(pattern=None, port=None, regex=False):
+def getpid(pattern=None, port=None, command=None):
     if port is not None:
         return _get_pid_by_port(port)
 
+    if command is not None:
+        line = "ps -eo pid,command | grep -P '{0}'".format(pattern)
+        res = lxrun(cmd).split('\n')
+        for r in res:
+            if r and 'grep' not in r:
+                return int(r[:5])
+        return 0 
+
     if pattern is not None:
-        res = lxrun('ps -ef | grep {0} "{1}"'.format(('-E' if regex else ''),pattern))
+        pattern = '^.*(:[0-9]{{2}}){{2}} (?!sudo).*{}.*'.format(pattern)
+        cmd = "ps -ef | grep -P '{0}'".format(pattern)
+        res = lxrun(cmd)
         res = res.strip()
         if not res:
-            return None
+            return 0
         else:
             res = res.split('\n')
+            res = filter(lambda x: 'grep' not in x, res)
+            res = list(res)
             pid = re.split(' +', res[0])[1]
-            return pid
+            return int(pid)
 
 def get_proc(pid):
     res = lxrun('ps p {0}| grep {0}'.format(pid)).strip()

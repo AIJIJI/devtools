@@ -1,6 +1,21 @@
 from unittest import TestCase, main 
+import os
+
 from devtools.linux import lxrun
 from devtools.format import strtodict
+from devtools import pm
+
+class PmTestCase(TestCase):
+    
+    def test_getpid(self):
+        foo = pm.getpid(command='python.*test.py')
+        pid = os.getpid()
+        proc1 = pm.get_proc(foo)
+        proc2 = pm.get_proc(pid)
+        print(proc1, proc2)
+
+        self.assertEqual(foo, os.getpid())
+
 
 
 class MainTestCase(TestCase):
@@ -22,4 +37,4 @@ class MainTestCase(TestCase):
         res = strtodict(text, 'r', ' ')
         self.assertEqual(res, d)
 
-main()        
+main() 
