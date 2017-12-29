@@ -8,11 +8,10 @@ from devtools import pm
 class PmTestCase(TestCase):
     
     def test_getpid(self):
-        foo = pm.getpid(command='python.*test.py')
+        foo = pm.getpid(command='python.*test\.py')
         pid = os.getpid()
         proc1 = pm.get_proc(foo)
         proc2 = pm.get_proc(pid)
-        print(proc1, proc2)
 
         self.assertEqual(foo, os.getpid())
 

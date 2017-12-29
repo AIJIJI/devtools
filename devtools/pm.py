@@ -28,10 +28,10 @@ def getpid(pattern=None, port=None, command=None):
         return _get_pid_by_port(port)
 
     if command is not None:
-        line = "ps -eo pid,command | grep -P '{0}'".format(pattern)
-        res = lxrun(cmd).split('\n')
+        foo = "ps -eo pid,command | grep -P '{0}'".format(command)
+        res = lxrun(foo).split('\n')
         for r in res:
-            if r and 'grep' not in r:
+            if r and 'grep' not in r and 'sudo' not in r:
                 return int(r[:5])
         return 0 
 
@@ -74,7 +74,6 @@ def reboot(pid):
     return pid
 
 if __name__ == '__main__':
-    print('Start testing.')
 
     for pid in [0,1,2,100]:
         print(get_proc(pid))
