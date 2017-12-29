@@ -5,8 +5,19 @@ from devtools.linux import lxrun
 from devtools.format import strtodict
 from devtools import pm
 
+class LinuxTestCase(TestCase):
+    def test_lxrun(self):
+        foo = lxrun(['ls', '-al'])
+        bar = lxrun('ls -al')
+        self.assertEqual(foo, bar)
+
+        foo = lxrun("ps -eo pid,command | grep -P '(aberaerc|PID)'").split('\n')
+        self.assertEqual(len(foo), 3)
+        self.assertEqual(foo[0][0:5], '  PID')
+
+
 class PmTestCase(TestCase):
-    
+      
     def test_getpid(self):
         foo = pm.getpid(command='python.*test\.py')
         pid = os.getpid()
