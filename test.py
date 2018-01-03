@@ -32,6 +32,11 @@ class PmTestCase(TestCase):
     def test_getports(self):
         foo = pm.getports()
         self.assertTrue(22 in foo)
+
+    def test_get_port_names(self):
+        foo = pm.get_port_names()
+        self.assertTrue(22 in foo.keys())
+
 class MainTestCase(TestCase):
     
     def test_strtodict(self):

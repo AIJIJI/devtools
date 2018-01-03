@@ -22,12 +22,18 @@ def _get_pid_by_port(port):
         else:
             return None
 
-def getpids(pattern):
+def getpids(command):
     foo = "ps -eo pid,command | \
            grep -v -P '(sudo|grep|PID.*COMMAND)' | \
-           grep -P '{0}'".format(pattern)
-    res = lxrun(foo).split('\n')
-    res =  [int(re.match(' *(\d*)', r).group(1)) for r in res if r]
+           grep -P '{0}'".format(command)
+    foo = lxrun(foo).split('\n')
+    
+    p = re.compile(' *(\d*)')
+    res = []
+    for i in foo:
+        m = p.match(i)
+        if m:
+            res.append(int(m.group(1)))
     return res
 
 def getpid(pattern=None, port=None, command=None):
@@ -58,12 +64,22 @@ def getpid(pattern=None, port=None, command=None):
             return int(pid)
 
 def getports(command=''):
-    '''get tcp listening ports'''
-    foo = lxrun("netstat -plnt | grep -v -P '(tcp6|PID|Active)'")
+    return get_port_names(command).keys()
+
+def get_port_names(command=''):
+    '''get tcp listening port and names'''
+    foo = lxrun("netstat -plnt")
     foo = foo.split('\n')
-    foo = [re.split(' +', i)[3].split(':')[1] for i in foo if command in i]
-    foo = map(int, foo)
-    return list(foo)
+    p = re.compile('tcp +\d+ +\d+ +[^ :]*:(\d*).+\d+/(.*)')
+    res = {}
+    for i in foo:
+        m = p.match(i)
+        if m:
+            k, v= m.groups()
+            if command in v:
+                k = int(k)
+                res[k] = v
+    return res
 
 
 def get_proc(pid):
