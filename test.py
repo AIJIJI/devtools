@@ -13,7 +13,6 @@ class LinuxTestCase(TestCase):
 
         foo = lxrun("ps -eo pid,command | grep -P '(aberaerc|PID)'").split('\n')
         self.assertEqual(len(foo), 3)
-        self.assertEqual(foo[0][0:5], '  PID')
 
 
 class PmTestCase(TestCase):
@@ -25,7 +24,10 @@ class PmTestCase(TestCase):
         proc2 = pm.get_proc(pid)
 
         self.assertEqual(foo, os.getpid())
-
+    
+    def test_getpids(self):
+        foo = pm.getpids('python')
+        self.assertTrue(len(foo) >= 1)
 
 
 class MainTestCase(TestCase):

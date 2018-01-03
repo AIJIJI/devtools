@@ -22,18 +22,26 @@ def _get_pid_by_port(port):
         else:
             return None
 
+def getpids(pattern):
+    foo = "ps -eo pid,command | \
+           grep -v -P '(sudo|grep|PID.*COMMAND)' | \
+           grep -P '{0}'".format(pattern)
+    res = lxrun(foo).split('\n')
+    res =  [int(re.match(' *(\d*)', r).group(1)) for r in res if r]
+    return res
 
 def getpid(pattern=None, port=None, command=None):
+    if sum(map(lambda x: 0 if x is None else 1, locals().values())) != 1:
+        raise TypeError('getpid() takes excatly one argument.')
+
     if port is not None:
         return _get_pid_by_port(port)
 
     if command is not None:
-        foo = "ps -eo pid,command | grep -P '{0}'".format(command)
-        res = lxrun(foo).split('\n')
-        for r in res:
-            if r and 'grep' not in r and 'sudo' not in r:
-                return int(r[:5])
-        return 0 
+        foo = getpids(command)
+        if foo:
+            return foo[0]
+        return 0
 
     if pattern is not None:
         pattern = '^.*(:[0-9]{{2}}){{2}} (?!sudo).*{}.*'.format(pattern)
