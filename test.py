@@ -29,7 +29,9 @@ class PmTestCase(TestCase):
         foo = pm.getpids('python')
         self.assertTrue(len(foo) >= 1)
 
-
+    def test_getports(self):
+        foo = pm.getports()
+        self.assertTrue(22 in foo)
 class MainTestCase(TestCase):
     
     def test_strtodict(self):

@@ -57,6 +57,15 @@ def getpid(pattern=None, port=None, command=None):
             pid = re.split(' +', res[0])[1]
             return int(pid)
 
+def getports(command=''):
+    '''get tcp listening ports'''
+    foo = lxrun("netstat -plnt | grep -v -P '(tcp6|PID|Active)'")
+    foo = foo.split('\n')
+    foo = [re.split(' +', i)[3].split(':')[1] for i in foo if command in i]
+    foo = map(int, foo)
+    return list(foo)
+
+
 def get_proc(pid):
     res = lxrun('ps p {0}| grep {0}'.format(pid)).strip()
     if not res:
@@ -73,6 +82,8 @@ def get_command(pid):
 
 def kill(pid):
     return lxrun('kill -9 {0}'.format(pid))
+
+
 
 def reboot(pid):
     cmd = get_command(pid)
