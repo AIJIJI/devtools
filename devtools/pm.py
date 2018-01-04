@@ -28,7 +28,7 @@ def getpids(command):
            grep -P '{0}'".format(command)
     foo = lxrun(foo).split('\n')
     
-    p = re.compile(' *(\d*)')
+    p = re.compile(' *(\d+)')
     res = []
     for i in foo:
         m = p.match(i)
