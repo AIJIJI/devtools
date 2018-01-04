@@ -76,9 +76,9 @@ def get_port_names(command=''):
         m = p.match(i)
         if m:
             k, v= m.groups()
-            if command in v:
+            if re.search(command, v):
                 k = int(k)
-                res[k] = v
+                res[k] = v.strip()
     return res
 
 

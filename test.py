@@ -36,6 +36,8 @@ class PmTestCase(TestCase):
     def test_get_port_names(self):
         foo = pm.get_port_names()
         self.assertTrue(22 in foo.keys())
+        foo = pm.get_port_names('s+hd?')
+        self.assertTrue('sshd' in foo[22])
 
 class MainTestCase(TestCase):
     
