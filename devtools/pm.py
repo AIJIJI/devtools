@@ -66,11 +66,16 @@ def getpid(pattern=None, port=None, command=None):
 def getports(command=''):
     return get_port_names(command).keys()
 
-def get_port_names(command=''):
+def get_port_names(command='', pid=-1):
     '''get tcp listening port and names'''
     foo = lxrun("netstat -plnt")
     foo = foo.split('\n')
-    p = re.compile('tcp +\d+ +\d+ +[^ :]*:(\d*).+\d+/(.*)')
+    
+    p = 'tcp +\d+ +\d+ +[^ :]*:(\d+).+' + \
+        (str(pid) if pid>=0 else '\d+') + '/' + \
+        '([^ ]*{0}[^ ]*)'.format(command)
+
+    p = re.compile(p)
     res = {}
     for i in foo:
         m = p.match(i)
@@ -88,12 +93,14 @@ def get_proc(pid):
         return None
     return res
 
-def get_command(pid):
-    res = get_proc(pid)
+def getcmd(pid):
+    res = lxrun('ps -eo pid,command | grep -P "^ *{0}"'.format(pid)).split('\n')
+    res = [i for i in res if res and 'grep' not in res]
     if not res:
-        return None
-    res = re.split(' +', res, 4) 
-    res = res[-1]
+        return ''
+    res = re.split(' +', res[0].strip(), 1) 
+    res = res[1]
+
     return res
 
 def kill(pid):

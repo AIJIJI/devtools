@@ -16,7 +16,11 @@ class LinuxTestCase(TestCase):
 
 
 class PmTestCase(TestCase):
-      
+    def test_getcmd(self):
+        pid = pm.getpid(command='sshd')
+        cmd = pm.getcmd(pid)
+        self.assertTrue('sshd' in cmd)
+
     def test_getpid(self):
         foo = pm.getpid(command='python.*test\.py')
         pid = os.getpid()
@@ -38,6 +42,22 @@ class PmTestCase(TestCase):
         self.assertTrue(22 in foo.keys())
         foo = pm.get_port_names('s+hd?')
         self.assertTrue('sshd' in foo[22])
+    
+        pids = pm.getpids('sshd')
+        res = {}
+        for pid in pids:
+            pns = pm.get_port_names(pid=pid)
+            if pns: 
+                res.update(pns)
+        self.assertEqual(res[22], 'sshd')
+
+        pids = pm.getpids('asd')
+        res = {}
+        for pid in pids:
+            pns = pm.get_port_names(pid=pid)
+            if pns: 
+                res.update(pns)
+        self.assertFalse(res)
 
 class MainTestCase(TestCase):
     
