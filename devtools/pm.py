@@ -2,6 +2,7 @@
     A simple process manager
 '''
 import re
+import warnings
 
 from .linux import lxrun
 from .exception import mute
@@ -26,6 +27,27 @@ def getpids(cmd):
     
     p = re.compile(' *(\d+)')
     return [int(p.match(i).group(1)) for i in foo if p.match(i)]
+    
+
+def kill(pid):
+    _, err = lxrun('kill -9 {0}'.format(pid), err=True)
+    if err:
+        return False
+    return True
+
+def kills(cmd):
+    res = 0
+    for p in getpids(cmd):
+        if kill(p):
+            res += 1
+    return res
+
+@mute(not __debug__, 0.0)
+def getwa():
+    foo = lxrun('top -b -n 1 | grep wa')
+    p = re.compile(' *([0-9.]*) *wa')
+    m = p.search(foo)
+    return float(m.group(1))
     
 
 # Internal
@@ -102,18 +124,6 @@ def get_proc(pid):
     return res
 
 
-def kill(pid):
-    _, err = lxrun('kill -9 {0}'.format(pid), err=True)
-    if err:
-        return False
-    return True
-
-def kills(command):
-    res = 0
-    for p in getpids(command):
-        if kill(p):
-            res += 1
-    return res
 
 def reboot(pid):
     cmd = get_command(pid)
@@ -123,5 +133,7 @@ def reboot(pid):
     return pid
 
 
+# Old version API
 def getcmd(pid):
+    warnings.warn("pm.getcmd(pid) will be deleted in the futur.\nUse pm.get(pid, 'cmd') instead.", DeprecationWarning)
     return get(pid, 'cmd')

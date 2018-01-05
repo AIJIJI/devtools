@@ -35,6 +35,13 @@ class PmTestCase(TestCase):
         cmd = pm.getcmd(pid)
         self.assertTrue('sshd' in cmd)
 
+    def test_get(self):
+        p = os.getpid()
+        self.assertTrue(10 >= float(pm.get(p, '%cpu')) >= 0)
+        self.assertTrue(10 >= float(pm.get(p, '%mem')) >= 0)
+        self.assertTrue(10 >= pm.getwa() >= 0)
+        
+
     def test_getpid(self):
         foo = pm.getpid(command='python.*test\.py')
         pid = os.getpid()
