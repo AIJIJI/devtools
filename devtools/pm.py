@@ -100,9 +100,10 @@ def getcmd(pid):
     if not res:
         return ''
     res = re.split(' +', res[0].strip(), 1) 
-    res = res[1]
+    if len(res) != 2
+        return ''
 
-    return res
+    return res[1]
 
 def kill(pid):
     _, err = lxrun('kill -9 {0}'.format(pid), err=True)
