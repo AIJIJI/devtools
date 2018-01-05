@@ -15,7 +15,7 @@ def lxrun(cmd, err=False, bg=False, daemon=False):
         cmd = ' '.join(cmd)
 
     if bg or daemon:
-        p = Popen(cmd, shell=True, stdout=DEVNULL)
+        p = Popen(cmd, shell=True, stdout=DEVNULL if daemon else None)
         return p 
         
     res = None
