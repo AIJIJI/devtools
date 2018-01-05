@@ -23,6 +23,7 @@ def _get_pid_by_port(port):
             return None
 
 def getpids(command):
+    '''get pid list by command'''
     foo = "ps -eo pid,command | \
            grep -v -P '(sudo|grep|PID.*COMMAND)' | \
            grep -P '{0}'".format(command)
@@ -104,9 +105,17 @@ def getcmd(pid):
     return res
 
 def kill(pid):
-    return lxrun('kill -9 {0}'.format(pid))
+    _, err = lxrun('kill -9 {0}'.format(pid), err=True)
+    if err:
+        return False
+    return True
 
-
+def kills(command):
+    res = 0
+    for p in getpids(command):
+        if kill(p):
+            res += 1
+    return res
 
 def reboot(pid):
     cmd = get_command(pid)

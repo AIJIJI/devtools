@@ -1,7 +1,7 @@
 from unittest import TestCase, main 
 import os
 
-from devtools.linux import lxrun
+from devtools.linux import lxrun, _py3_gen, pyrun
 from devtools.format import strtodict
 from devtools import pm
 
@@ -13,7 +13,12 @@ class LinuxTestCase(TestCase):
 
         foo = lxrun("ps -eo pid,command | grep -P '(aberaerc|PID)'").split('\n')
         self.assertEqual(len(foo), 3)
-
+    
+    def test_py3(self):
+        _py3_gen().__next__()
+        foo = pyrun('-c "print(2)"')
+        self.assertEqual(foo, '2')
+        
 
 class PmTestCase(TestCase):
     def test_getcmd(self):
@@ -58,6 +63,14 @@ class PmTestCase(TestCase):
             if pns: 
                 res.update(pns)
         self.assertFalse(res)
+
+    def test_kill(self):
+        cmd = '-c "while True: pass"'
+        ps = [pyrun(cmd, daemon=True) for _ in range(10)]
+        foo = pm.kills('while True')
+        self.assertEqual(foo, 10)
+        foo = [p.wait(timeout=3) for p in ps]
+        self.assertEqual(set(foo), set([-9]))
 
 class MainTestCase(TestCase):
     
