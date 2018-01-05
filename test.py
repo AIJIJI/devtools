@@ -4,7 +4,16 @@ import os
 from devtools.linux import lxrun, _py3_gen, pyrun
 from devtools.format import strtodict
 from devtools import pm
+from devtools.exception import mute
 
+
+class ExceptionTestCase(TestCase):
+    def test_mute(self):
+        a = []
+        @mute(True, 1)
+        def f(a):
+            return a[1]
+        self.assertEqual(f(a), 1)
 class LinuxTestCase(TestCase):
     def test_lxrun(self):
         foo = lxrun(['ls', '-al'])
@@ -35,8 +44,8 @@ class PmTestCase(TestCase):
         self.assertEqual(foo, os.getpid())
     
     def test_getpids(self):
-        foo = pm.getpids('python')
-        self.assertTrue(len(foo) >= 1)
+        foo = pm.getpids('sshd')
+        self.assertTrue(len(foo) >= 4)
 
     def test_getports(self):
         foo = pm.getports()
@@ -66,9 +75,9 @@ class PmTestCase(TestCase):
 
     def test_kill(self):
         cmd = '-c "while True: pass"'
-        ps = [pyrun(cmd, daemon=True) for _ in range(10)]
+        ps = [pyrun(cmd, daemon=True) for _ in range(3)]
         foo = pm.kills('while True')
-        self.assertEqual(foo, 10)
+        self.assertEqual(foo, 3)
         foo = [p.wait(timeout=3) for p in ps]
         self.assertEqual(set(foo), set([-9]))
 
@@ -90,5 +99,6 @@ class MainTestCase(TestCase):
         text = 'k1 k2\nv1 v2 v3\n'
         res = strtodict(text, 'r', ' ')
         self.assertEqual(res, d)
+
 
 main() 

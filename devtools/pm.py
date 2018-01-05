@@ -1,11 +1,32 @@
 '''
     A simple process manager
 '''
-
 import re
-from devtools.linux import lxrun
 
-__all__ = ['getpid', 'get_command', 'kill', 'reboot']
+from .linux import lxrun
+from .exception import mute
+
+
+__all__ = ['get', 'getpids', 'kill', 'reboot']
+
+
+@mute(not __debug__, '')
+def get(pid, spec):
+    return lxrun('ps hp {0} -o {1}'.format(pid, spec)).strip()
+    
+
+
+@mute(not __debug__, [])
+def getpids(cmd):
+    '''get pids list by command'''
+    foo = "ps -eo pid,command | \
+           grep -v -P '(sudo|grep|PID.*COMMAND)' | \
+           grep -P '{0}'".format(cmd)
+    foo = lxrun(foo).split('\n')
+    
+    p = re.compile(' *(\d+)')
+    return [int(p.match(i).group(1)) for i in foo if p.match(i)]
+    
 
 # Internal
 def _get_pid_by_port(port):
@@ -22,20 +43,6 @@ def _get_pid_by_port(port):
         else:
             return None
 
-def getpids(command):
-    '''get pid list by command'''
-    foo = "ps -eo pid,command | \
-           grep -v -P '(sudo|grep|PID.*COMMAND)' | \
-           grep -P '{0}'".format(command)
-    foo = lxrun(foo).split('\n')
-    
-    p = re.compile(' *(\d+)')
-    res = []
-    for i in foo:
-        m = p.match(i)
-        if m:
-            res.append(int(m.group(1)))
-    return res
 
 def getpid(pattern=None, port=None, command=None):
     if sum(map(lambda x: 0 if x is None else 1, locals().values())) != 1:
@@ -72,7 +79,7 @@ def get_port_names(command='', pid=-1):
     foo = lxrun("netstat -plnt")
     foo = foo.split('\n')
     
-    p = 'tcp +\d+ +\d+ +[^ :]*:(\d+).+' + \
+    p = 'tcp +\d+ +\d+ +[^ ]*:(\d+) .+' + \
         (str(pid) if pid>=0 else '\d+') + '/' + \
         '([^ ]*{0}[^ ]*)'.format(command)
 
@@ -94,16 +101,6 @@ def get_proc(pid):
         return None
     return res
 
-def getcmd(pid):
-    res = lxrun('ps -eo pid,command | grep -P "^ *{0}"'.format(pid)).split('\n')
-    res = [i for i in res if res and 'grep' not in res]
-    if not res:
-        return ''
-    res = re.split(' +', res[0].strip(), 1) 
-    if len(res) != 2
-        return ''
-
-    return res[1]
 
 def kill(pid):
     _, err = lxrun('kill -9 {0}'.format(pid), err=True)
@@ -125,27 +122,6 @@ def reboot(pid):
     pid = get_pid(pattern=cmd)
     return pid
 
-if __name__ == '__main__':
 
-    for pid in [0,1,2,100]:
-        print(get_proc(pid))
-    print('-' * 20)
-    
-    port = [12346, 0, 1, 80]
-    for p in port:
-        print('port at {0} is '.format(p) + str( _get_pid_by_port(p)))
-    
-    print('Pid of this is ' + get_pid(pattern='python.*pm\.py'))
-    print('-'*20)
-    pid = get_pid(port=12346)
-    print('origin pid =', pid)
-    cmd = get_command(pid)
-    print('cmd =', repr(cmd))
-    kill(pid)
-    cmd2 = get_command(pid)
-    print('killed cmd =', cmd2)
-    lxrun(cmd, daemon=True)
-    pid = get_pid(pattern=cmd)
-    print('New pid:', pid)
-    pid = reboot(pid)
-    print('Another new pid', pid)
+def getcmd(pid):
+    return get(pid, 'cmd')

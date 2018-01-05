@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE, DEVNULL
 import os
 import re
 
-from devtools.format import tostr
+from .format import tostr
 
 
 __all__ = ['lxrun']
