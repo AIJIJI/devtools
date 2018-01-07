@@ -4,9 +4,72 @@ import os
 import re
 
 from .format import tostr
+from .exception import mute
 
 
-__all__ = ['lxrun']
+__all__ = ['lxrun', 'lxget', 'SPEC']
+
+
+
+class Spec:
+    # if the specifier is less than zero,
+    # then the meth:lxget need no extra argument.
+    COMMAND = 2             # COMMAND
+    MANUFACTURER = -1       
+    OS_VERSION = -2         
+    PRODUCT_NAME = -3
+    SERIAL_NUMBER = -4
+    IO_WAIT = -5            # time waiting for I/O completion
+    MAC_ADDRESS = -6
+    HOSTNAME = -7
+
+    def base(self):
+        l = list(filter(lambda x: x[0].isupper() and getattr(self, x) < 0, dir(self)))
+        return l
+SPEC = Spec()
+
+@mute(not __debug__, '')
+def lxget(spec, pid=None, err=False):
+    res = ''
+    errmsg = ''
+    # SWITCH
+    if spec == Spec.IO_WAIT:
+        foo, errmsg = lxrun('top -b -n 1 | grep wa', err=True)
+        p = re.compile(' *([0-9.]*) *wa')
+        m = p.search(foo)
+        res =  m.group(1)
+
+    elif spec == Spec.MANUFACTURER:
+        res, errmsg = lxrun("dmidecode -s system-manufacturer", err=True)
+    
+    elif spec == Spec.OS_VERSION:
+        res, errmsg = lxrun("sed -n '1,1p' /etc/issue", err=True)
+
+    elif spec == Spec.PRODUCT_NAME:
+        res, errmsg = lxrun("dmidecode -s system-product-name", err=True)
+        
+    elif spec == Spec.SERIAL_NUMBER:
+        res, errmsg = lxrun("dmidecode -s system-serial-number", err=True)
+        if res == 'Not Specified' or res.startswith('VM'):
+            res = ''
+
+    elif spec == Spec.MAC_ADDRESS:
+        res, errmsg = lxrun("ifconfig -a", err=True)
+        p = ':'.join(['(\w{2})']*6)
+        res = ''.join(re.search(p, res).groups())
+
+    elif spec == Spec.HOSTNAME:
+        res = lxrun('hostname')
+
+    else:
+        pass
+    
+    # RETURN
+    if err:
+        return res, errmsg
+    else:
+        return res
+        
 
 
 

@@ -1,5 +1,5 @@
 from . import  pm 
-from .linux import lxrun
+from .linux import lxrun, lxget, SPEC
 
 
 

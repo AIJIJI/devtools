@@ -3,7 +3,7 @@ import os
 
 from devtools.linux import lxrun, _py3_gen, pyrun
 from devtools.format import strtodict
-from devtools import pm
+from devtools import pm, lxget, SPEC
 from devtools.exception import mute
 
 
@@ -28,18 +28,19 @@ class LinuxTestCase(TestCase):
         foo = pyrun('-c "print(2)"')
         self.assertEqual(foo, '2')
         
+    def test_lxget(self):
+        print(lxget(SPEC.MANUFACTURER))
 
 class PmTestCase(TestCase):
     def test_getcmd(self):
         pid = pm.getpid(command='sshd')
-        cmd = pm.getcmd(pid)
+        cmd = pm.get(pid, 'cmd')
         self.assertTrue('sshd' in cmd)
 
     def test_get(self):
         p = os.getpid()
         self.assertTrue(10 >= float(pm.get(p, '%cpu')) >= 0)
         self.assertTrue(10 >= float(pm.get(p, '%mem')) >= 0)
-        self.assertTrue(10 >= pm.getwa() >= 0)
         
 
     def test_getpid(self):

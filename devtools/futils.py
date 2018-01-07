@@ -1,3 +1,5 @@
+import re
+
 class FileWrapper:
     """Wrapper to convert file-like objects to iterables"""
 
@@ -21,4 +23,25 @@ class FileWrapper:
         if data:
             return data
         raise StopIteration
+
+def csvtodict(f, sep):
+    res = {}
+    for l in f.readlines():
+        l = re.split(sep, l.strip())
+        addr = ()
+
+        foo = l[0].strip()
+        if ':' in foo:
+            ip, port = foo.split(':') 
+            addr = (ip, int(port))
+        else:
+            addr = (foo, 8080)
+        res[addr] = tuple(l[1:])
+    return res
+
+if __name__ == '__main__':
+    res = {}
+    with open('test.txt', 'r') as f:
+        res.update(csvtodict(f, '[,，]'))
+    print(res)
 

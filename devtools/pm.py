@@ -3,6 +3,7 @@
 '''
 import re
 import warnings
+import sys
 
 from .linux import lxrun
 from .exception import mute
@@ -42,12 +43,6 @@ def kills(cmd):
             res += 1
     return res
 
-@mute(not __debug__, 0.0)
-def getwa():
-    foo = lxrun('top -b -n 1 | grep wa')
-    p = re.compile(' *([0-9.]*) *wa')
-    m = p.search(foo)
-    return float(m.group(1))
     
 
 # Internal
@@ -136,4 +131,5 @@ def reboot(pid):
 # Old version API
 def getcmd(pid):
     warnings.warn("pm.getcmd(pid) will be deleted in the futur.\nUse pm.get(pid, 'cmd') instead.", DeprecationWarning)
+    print(sys._getframe().f_back.f_globals['__file__'], ': line ', sys._getframe().f_back.f_lineno)
     return get(pid, 'cmd')
