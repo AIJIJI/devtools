@@ -2,6 +2,7 @@
 from subprocess import Popen, PIPE, DEVNULL
 import os
 import re
+import psutil
 
 from .format import tostr
 from .exception import mute
@@ -15,6 +16,7 @@ class Spec:
     # if the specifier is less than zero,
     # then the meth:lxget need no extra argument.
     COMMAND = 2             # COMMAND
+    PID = 1
     MANUFACTURER = -1       
     OS_VERSION = -2         
     PRODUCT_NAME = -3
@@ -26,10 +28,12 @@ class Spec:
     def base(self):
         l = list(filter(lambda x: x[0].isupper() and getattr(self, x) < 0, dir(self)))
         return l
+
 SPEC = Spec()
 
+
 @mute(not __debug__, '')
-def lxget(spec, pid=None, err=False):
+def lxget(spec, pid=None, err=False, **kwargs):
     res = ''
     errmsg = ''
     # SWITCH
@@ -60,6 +64,7 @@ def lxget(spec, pid=None, err=False):
 
     elif spec == Spec.HOSTNAME:
         res = lxrun('hostname')
+
 
     else:
         pass

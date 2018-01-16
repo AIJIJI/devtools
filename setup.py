@@ -10,6 +10,6 @@ setup(
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
     packages=['devtools'],
-    install_requires=[],
+    install_requires=['psutil'],
     url='https://github.com/AIJIJI/devtools'
                                                                                 )

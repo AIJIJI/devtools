@@ -14,6 +14,7 @@ class ExceptionTestCase(TestCase):
         def f(a):
             return a[1]
         self.assertEqual(f(a), 1)
+
 class LinuxTestCase(TestCase):
     def test_lxrun(self):
         foo = lxrun(['ls', '-al'])
@@ -32,22 +33,27 @@ class LinuxTestCase(TestCase):
         print(lxget(SPEC.MANUFACTURER))
 
 class PmTestCase(TestCase):
-    def test_getcmd(self):
-        pid = pm.getpid(command='sshd')
-        cmd = pm.get(pid, 'cmd')
+    def test(self):
+        pid = pm.pid_of_listen_port(22)
+        proc = pm.Process(pid)
+        self.assertEqual('sshd',  pm.Process(pid).name())
+
+        pid = pm.getpid(cmd='sshd')
+        cmd = proc.cmd()
         self.assertTrue('sshd' in cmd)
 
-    def test_get(self):
-        p = os.getpid()
-        self.assertTrue(10 >= float(pm.get(p, '%cpu')) >= 0)
-        self.assertTrue(10 >= float(pm.get(p, '%mem')) >= 0)
+        pid = os.getpid()
+        self.assertTrue(10 >= proc.cpu_percent() >= 0)
+        self.assertTrue(10 >= proc.memory_percent() >= 0)
         
 
     def test_getpid(self):
-        foo = pm.getpid(command='python.*test\.py')
+        foo = pm.getpids('sshd')
+        print(foo)
+        foo = pm.getpid('python.*test\.py')
         pid = os.getpid()
-        proc1 = pm.get_proc(foo)
-        proc2 = pm.get_proc(pid)
+        proc1 = pm.Process(foo)
+        proc2 = pm.Process(pid)
 
         self.assertEqual(foo, os.getpid())
     
@@ -108,5 +114,11 @@ class MainTestCase(TestCase):
         res = strtodict(text, 'r', ' ')
         self.assertEqual(res, d)
 
+class TomcatTestCase(TestCase):
+    
+    def testTomcat(self):
+       from devtools.tomcat import Tomcat
+       t = Tomcat(name='sshd', port=22)
+       print(t.status())
 
 main() 

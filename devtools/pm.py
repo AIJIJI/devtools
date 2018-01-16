@@ -1,29 +1,26 @@
 '''
-    A simple process manager
+    Process Manager
+    A wrapper of psutil with some useful functions
 '''
 import re
 import warnings
 import sys
+import signal
+from psutil import *
 
 from .linux import lxrun
 from .exception import mute
 
 
-__all__ = ['get', 'getpids', 'kill', 'reboot']
-
-
-@mute(not __debug__, '')
-def get(pid, spec):
-    return lxrun('ps hp {0} -o {1}'.format(pid, spec)).strip()
-    
+Process.cmd = lambda self: ' '.join(self.cmdline())
 
 
 @mute(not __debug__, [])
-def getpids(cmd):
+def getpids(pattern, spec='cmd'):
     '''get pids list by command'''
-    foo = "ps -eo pid,command | \
+    foo = "ps -eo pid,{0} | \
            grep -v -P '(sudo|grep|PID.*COMMAND)' | \
-           grep -P '{0}'".format(cmd)
+           grep -P '{1}'".format(spec, pattern)
     foo = lxrun(foo).split('\n')
     
     p = re.compile(' *(\d+)')
@@ -43,33 +40,71 @@ def kills(cmd):
             res += 1
     return res
 
-    
+# --------Useful wrapper based on psutil------------
+def pid_of_listen_port(port): 
+    tcps = net_connections(kind='tcp') 
+    for conn in tcps:
+        if conn.laddr.port == port and conn.status == CONN_LISTEN:
+            return conn.pid
+    return 0
 
-# Internal
-def _get_pid_by_port(port):
-    pattern = ':{} | PID\/P'.format(port)
-    res = lxrun('netstat -apn | grep -E "{0}"'.format(pattern)).strip()
-    lines = res.split('\n')
-    if len(lines) == 1:
-        return None
+
+def kill_proc_tree(p, sig=signal.SIGTERM, include_parent=True,
+      timeout=None, on_terminate=None):
+    """Kill a process tree (including grandchildren) with signal
+    "sig" and return a (gone, still_alive) tuple.
+    "on_terminate", if specified, is a callabck function which is
+    called as soon as a child terminates.
+    """
+    if isinstance(p, Process):
+        pid = p.pid
+        parent = p
     else:
-        site = re.search('PID\/P', lines[0]).start()
-        pid = lines[1][site:].split('/')[0]
-        if pid.isdigit():
-            return pid
-        else:
-            return None
+        pid = p
+        parent = Process(p)
+    if pid == os.getpid():
+        raise RuntimeError("I refuse to kill myself")
+    parent = Process(pid)
+    children = parent.children(recursive=True)
+    if include_parent:
+        children.append(parent)
+    for p in children:
+        p.send_signal(sig)
+    gone, alive = wait_procs(children, timeout=timeout,
+                                    callback=on_terminate)
+    return (gone, alive)
 
 
-def getpid(pattern=None, port=None, command=None):
-    if sum(map(lambda x: 0 if x is None else 1, locals().values())) != 1:
-        raise TypeError('getpid() takes excatly one argument.')
+def reap_children(timeout=3):
+    """Tries hard to terminate and ultimately kill all the children of this process.
+    This may be useful in unit tests whenever sub-processes are started. 
+    This will help ensure that no extra children (zombies) stick around to hog resources.
+    """
+    def on_terminate(proc):
+        print("process {} terminated with exit code {}".format(proc, proc.returncode))
 
-    if port is not None:
-        return _get_pid_by_port(port)
+    procs = Process().children()
+    # send SIGTERM
+    for p in procs:
+        p.terminate()
+    gone, alive = wait_procs(procs, timeout=timeout, callback=on_terminate)
+    if alive:
+        # send SIGKILL
+        for p in alive:
+            print("process {} survived SIGTERM; trying SIGKILL" % p)
+            p.kill()
+        gone, alive = wait_procs(alive, timeout=timeout, callback=on_terminate)
+        if alive:
+            # give up
+            for p in alive:
+                print("process {} survived SIGKILL; giving up" % p)
+# --------------------------------------------------
 
-    if command is not None:
-        foo = getpids(command)
+
+
+def getpid(cmd=None, pattern=None):
+    if cmd is not None:
+        foo = getpids(cmd)
         if foo:
             return foo[0]
         return 0
@@ -112,20 +147,15 @@ def get_port_names(command='', pid=-1):
     return res
 
 
-def get_proc(pid):
-    res = lxrun('ps p {0}| grep {0}'.format(pid)).strip()
-    if not res:
-        return None
-    return res
-
-
-
 def reboot(pid):
     cmd = get_command(pid)
     kill(pid)
     lxrun(cmd, daemon=True)
     pid = get_pid(pattern=cmd)
     return pid
+
+
+# ----------------- Full tested internal function  -----------------------
 
 
 # Old version API
