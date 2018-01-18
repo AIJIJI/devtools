@@ -3,7 +3,6 @@
 '''
 import os
 from .pm import *
-from assertpy import assert_that
 
 DEFAULTPATH = '/usr/local/services'
 
@@ -24,7 +23,6 @@ class Tomcat:
     def getpid(self):
         pids = getpids(self.name)
         if len(pids) >= 1:
-            assert_that(pids[0]).is_equal_to(1315)
             return pids[0]
         return 0
         
@@ -37,7 +35,6 @@ class Tomcat:
    
     def status(self):
         proc = self.getproc()
-        assert_that(proc.pid).is_equal_to(1315)
         if not proc:
             dic = {'status': 'dead'}
             return dic 
