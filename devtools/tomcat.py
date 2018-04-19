@@ -13,8 +13,9 @@ def find_tomcat():
         if 'tomcat' in d:
             yield d
 
+
 class Tomcat:
-    
+
     def __init__(self, rootdir=DEFAULTPATH, name='tomcat', port=8080):
         self.basedir = os.path.join(rootdir, name)
         self.name = name
@@ -25,30 +26,29 @@ class Tomcat:
         if len(pids) >= 1:
             return pids[0]
         return 0
-        
+
     def getproc(self):
         p = self.getpid()
         if p:
             return Process(p)
         else:
             return None
-   
+
     def status(self):
         proc = self.getproc()
         if not proc:
             dic = {'status': 'dead'}
-            return dic 
+            return dic
         net_dic = {}
         dic = {}
-        
+
         conns = net_connections('tcp')
         conns_local = [i for i in conns if i.laddr[1] == self.port]
-        conn_types = {key: value for key, value in globals().items() if key.startswith('CONN_')}
+        conn_types = {key: value for key,
+                      value in globals().items() if key.startswith('CONN_')}
         for key, value in conn_types.items():
             foo = [i for i in conns_local if i.status == value]
             net_dic[key[5:]] = len(foo)
-            
-            
 
         with proc.oneshot():
 
@@ -71,7 +71,7 @@ class Tomcat:
     def start(self):
         foo = os.path.join(self.basedir, 'bin/startup.sh')
         lxrun(['bash', foo])
-    
+
     def restart(self):
         self.stop()
         for i in range(10):
@@ -80,5 +80,3 @@ class Tomcat:
             else:
                 break
         self.start()
-
-

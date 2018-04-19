@@ -7,7 +7,7 @@ def mute(cond, default=None):
                 except:
                     return default
             return f
-            
+
         else:
             return func
     return dec

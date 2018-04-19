@@ -1,5 +1,6 @@
-# coding: utf8
 import re
+
+
 def tostr(sth):
     if isinstance(sth, str):
         return sth
@@ -8,11 +9,12 @@ def tostr(sth):
     else:
         return str(sth)
 
+
 def tobytes(sth):
     if isinstance(sth, bytes):
         return sth
     elif isinstance(sth, str):
-        return sth.encode
+        return sth.encode()
     else:
         return bytes(sth)
 
@@ -41,6 +43,7 @@ def toaddr(strs):
     else:
         raise ValueError
 
+
 def strtodict(text, mode, *args):
     '''
     # parse text to dict
@@ -57,7 +60,7 @@ def strtodict(text, mode, *args):
     #     k1   k2    k3 
     #     v1   v2    v3 
     #     d2v1 d2v2  d3v3
-    
+
     '''
     if mode == 'c':
         rows = filter(lambda x: x.strip(), re.split('\n', text))
@@ -72,7 +75,7 @@ def strtodict(text, mode, *args):
                 k, v = k.strip(), v.strip()
                 dic[k] = v
         return dic
-    
+
     elif mode == 'cs':
         dics = []
         dic = strtodict(text, 'c', args[0])
@@ -83,7 +86,7 @@ def strtodict(text, mode, *args):
             for n, value in enumerate(values):
                 dics[n][k] = value
         return dics
-    
+
     elif mode == 'rs':
         dics = []
         items = list(filter(lambda x: x.strip(), re.split('\n', text)))
@@ -94,8 +97,3 @@ def strtodict(text, mode, *args):
         return dics
     elif mode == 'r':
         return strtodict(text, 'rs', *args)[0]
-
-
-                
-        
-

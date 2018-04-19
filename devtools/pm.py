@@ -8,7 +8,7 @@ import sys
 import signal
 from psutil import *
 
-from .linux import lxrun
+from .linuxtools import lxrun
 from .exception import mute
 
 
