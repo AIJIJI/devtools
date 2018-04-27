@@ -1,5 +1,6 @@
 import re
 
+
 class FileWrapper:
     """Wrapper to convert file-like objects to iterables"""
 
