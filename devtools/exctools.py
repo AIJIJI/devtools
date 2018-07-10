@@ -1,4 +1,8 @@
 def mute(cond, default=None):
+    '''
+    if `cond` is true, catch all exceptions a function throw
+    and if any exception, return the `default` value.
+    '''
     def dec(func):
         if cond:
             def f(*args, **kwargs):
@@ -7,7 +11,6 @@ def mute(cond, default=None):
                 except:
                     return default
             return f
-
         else:
             return func
     return dec

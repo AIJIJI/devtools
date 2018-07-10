@@ -1,14 +1,17 @@
 from itertools import iteritems
 
 
-def reverse(mapping):
+def inverse(mapping):
     """
     Returns a new dictionary with keys and values swapped.
 
-        >>> reverse({1: 2, 3: 4})
+        >>> inverse({1: 2, 3: 4})
         {2: 1, 4: 3}
     """
-    return dict([(value, key) for (key, value) in iteritems(mapping)])
+    return dict([
+        (value, key)
+        for (key, value) in
+        iteritems(mapping)])
 
 
 def find(dictionary, element):
@@ -24,5 +27,4 @@ def find(dictionary, element):
     for (key, value) in iteritems(dictionary):
         if element is value:
             return key
-
 
