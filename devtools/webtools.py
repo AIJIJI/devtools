@@ -1,6 +1,7 @@
 from urllib.parse import quote, urljoin, urlencode
 from itertools import chain
 
+
 def create_url(base, *query, path=None, params={}):
     """ Create a url.
 
@@ -19,10 +20,10 @@ def create_url(base, *query, path=None, params={}):
     ...     ('key1', 'value'),
     ...     ('key2', None),     # Will not include None
     ...     ('url', 'http://example.com'),
-    ...     
+    ...
     ...     path='foo/bar',
     ...     key=['value1', 'value2']
-    ...     
+    ...
     ... )
     'http://localhost:5000/foo/bar?key1=value&url=http%3A%2F%2Fexample.com&key=value1&key=value2'
     """
@@ -31,7 +32,9 @@ def create_url(base, *query, path=None, params={}):
     if path is not None:
         url = urljoin(url, quote(path))
     # Remove key/value pairs with None values.
-    query = chain(filter(lambda pair: pair[1] is not None, query), params.items())
+    query = chain(
+        filter(lambda pair: pair[1] is not None, query), params.items())
+
     def seperate(entry):
         if isinstance(entry[1], list):
             return ((entry[0], i) for i in entry[1] if i)
@@ -42,6 +45,3 @@ def create_url(base, *query, path=None, params={}):
     # Add the query string to the url
     url = urljoin(url, '?{0}'.format(urlencode(list(query))))
     return url
-
-
-
