@@ -1,3 +1,6 @@
+#
+# 帮助更好的编写命令行工具
+#
 import os
 import sys
 from functools import wraps
@@ -28,6 +31,18 @@ def warn(text):
 
 
 def environ_required(*environ_args, **environ_kargs):
+    '''  examples:
+
+        [root@localhost]# export A=3
+        [root@localhost]# export B=4
+
+        @environ_required('A', b='B')
+        def main():
+            print(A, b)
+
+        # [out] 3 4
+
+    '''
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
