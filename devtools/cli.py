@@ -4,6 +4,17 @@ from functools import wraps
 from termcolor import colored
 
 
+class Error(Exception):
+    pass
+
+
+class EnvironError(Error):
+    def __init__(self, variable, message=None):
+        self.variable = variable
+        if message is None:
+            message = f'Error: 环境变量 `{variable}` 未设置'
+
+
 def error(text):
     print(
         colored(text, 'red', attrs=['bold']),
@@ -25,8 +36,7 @@ def environ_required(*environ_args, **environ_kargs):
                 try:
                     f.__globals__[arg] = os.environ[environ_name]
                 except KeyError as e:
-                    error(f'Error: 环境变量 `{environ_name}` 未设置')
-                    exit(1)
+                    raise EnvironError(environ_name)
             return f(*args, **kwargs)
         return decorated_function
     return decorator
