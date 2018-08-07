@@ -149,15 +149,13 @@ class Daemon(object):
             pf = open(self.pidfile, 'r')
             pid = int(pf.read().strip())
             pf.close()
-        except IOError as e:
+        except IOError:
             pid = None
-            error('ERROR: pid 文件读取失败')
         except SystemExit:
             pid = None
 
         if pid:
-            message = "pidfile %s already exists. Is it already running?\n"
-            sys.stderr.write(message % self.pidfile)
+            error(f"ERROR: pidfile {self.pidfile} already exists. Is it already running?")
             sys.exit(1)
 
         # Start the daemon
@@ -176,8 +174,7 @@ class Daemon(object):
         pid = self.get_pid()
 
         if not pid:
-            error("ERROR: pidfile {self.pidfile} does not exist. Not running?")
-
+            error(f"ERROR: pidfile {self.pidfile} does not exist. Not running?")
             # Just to be sure. A ValueError might occur if the PID file is
             # empty but does actually exist
             if os.path.exists(self.pidfile):
