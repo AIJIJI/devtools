@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='AIJIdevtools',
-    version='0.5.0',
+    version='0.5.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
@@ -11,7 +11,14 @@ setup(
     install_requires=[
         'sh',
         'sqlparse',
-        'termcolor',
+        'termcolor'
     ],
-    url='https://github.com/AIJIJI/devtools'
+    url='https://github.com/AIJIJI/devtools',
+    classifiers=(
+        "Programming Language :: Python :: 3.7",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Framework :: Flask",
+        "Development Status :: 1 - Planning",
+    )
 )
