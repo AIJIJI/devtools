@@ -2,6 +2,14 @@ from urllib.parse import quote, urljoin, urlencode
 from itertools import chain
 
 
+def merge_fields(request):
+    # Return a mixture of all provided objects in request
+    data = {}
+    data.update(request.values.to_dict())
+    data.update(request.get_json(force=True, silent=True) or {})
+    return data
+
+
 def create_url(base, *query, path=None, params={}):
     """ Create a url.
 
