@@ -8,7 +8,7 @@ def mute(cond, default=None):
             def f(*args, **kwargs):
                 try:
                     return func(*args, **kwargs)
-                except:
+                except Exception:
                     return default
             return f
         else:
