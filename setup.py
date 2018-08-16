@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='AIJIdevtools',
-    version='1.0',
+    version='1.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
