@@ -14,11 +14,11 @@ setup(
         'termcolor'
     ],
     url='https://github.com/AIJIJI/devtools',
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
         "Framework :: Flask",
-        "Development Status :: 1 - Planning",
-    )
+        "Development Status :: 1 - Planning"
+    ]
 )
