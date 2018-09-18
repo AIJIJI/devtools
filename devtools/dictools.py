@@ -27,4 +27,3 @@ def find(dictionary, element):
     for (key, value) in iteritems(dictionary):
         if element is value:
             return key
-

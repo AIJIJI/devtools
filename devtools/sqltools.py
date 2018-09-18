@@ -49,18 +49,3 @@ def selectify(sentence: str):
     for statement in parse(sentence):
         if statement.get_type() in ['UPDATE', 'DELETE']:
             yield update_or_delete_to_select(statement)
-
-
-a = selectify('update eee where id = 4; update aaa where id =4')
-
-
-if __name__ == '__main__':
-    # print(bar.has_ancestor(Keyword))
-    sql = '1; select; select 1; select * from 2'
-    foo = is_dml(sql)
-    print(foo)
-    # print(type(foo))
-    # print(dir(foo))
-    # print(foo[0].value)
-    # print(type(foo[0]))
-    # print(type(foo.get_type()))
