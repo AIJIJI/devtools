@@ -59,7 +59,7 @@ class Daemon(object):
 
     def log(self, *args):
         if self.verbose >= 1:
-            print(*args, sys.stderr)
+            print(*args, file=sys.stderr)
 
     def daemonize(self):
         """
