@@ -28,6 +28,10 @@ import signal
 from devtools.cli import error
 
 
+class DaemonError(Exception):
+    pass
+
+
 class Daemon(object):
     """
     A generic daemon class.
@@ -55,7 +59,7 @@ class Daemon(object):
 
     def log(self, *args):
         if self.verbose >= 1:
-            print(*args)
+            print(*args, sys.stderr)
 
     def daemonize(self):
         """
@@ -142,7 +146,7 @@ class Daemon(object):
         Start the daemon
         """
 
-        self.log("Starting...")
+        self.log(f"{self.__class__.__name__} starting...")
 
         # Check for a pidfile to see if the daemon already runs
         try:
@@ -168,7 +172,7 @@ class Daemon(object):
         """
 
         if self.verbose >= 1:
-            self.log("Stopping...")
+            self.log(f"{self.__class__.__name__} stopping...")
 
         # Get the pid from the pidfile
         pid = self.get_pid()
@@ -197,7 +201,7 @@ class Daemon(object):
                     os.remove(self.pidfile)
             else:
                 print(str(err))
-                sys.exit(1)
+                raise DaemonError
 
         self.log("Stopped")
 
@@ -207,6 +211,9 @@ class Daemon(object):
         """
         self.stop()
         self.start()
+
+    def status(self):
+        pass
 
     def get_pid(self):
         try:
