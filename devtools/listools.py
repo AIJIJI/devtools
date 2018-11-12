@@ -28,3 +28,38 @@ def split(ls, sep=None):
     else:
         res.append(tmplist)
     return res
+
+
+def dict_ordered(ls, sep='\n', line_prefix=''):
+    ls = sorted(ls)
+    pre = ls[0][0]
+    res = line_prefix + repr(ls[0]) + ','
+    for s in ls[1:]:
+        if s[0] == pre:
+            res += ' ' + repr(s) + ','
+        else:
+            res += sep + line_prefix + repr(s) + ','
+        pre = s[0]
+    return res
+
+
+if __name__ == '__main__':
+    l = (
+            'id', 'module_id', 'type', 'name', 'status_code',
+            'status', 'flow_record', 'flow_nodes',
+            'opinions', 'apply_type', 'manager', 'chinese_name',
+            'app_level', 'desc', 'lang', 'gitlab', 'dependency_version',
+            'basic_software', 'container', 'container_ver',
+            'has_container', 'deploy_path', 'log_path',
+            'script_path', 'heartbeat_path', 'running_params', 'port',
+            'created_time', 'updated_time', 'app_id', 'names'
+        )
+
+
+    print('(\n'+dict_ordered(l, line_prefix=' '*12)+'\n'+' '*8+')')
+
+#     l = '''
+
+# '''
+#     l = l.split('\n\n\n')
+#     print('\n\n\n'.join(sorted(l)))
