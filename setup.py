@@ -1,17 +1,22 @@
 #!/bin/python3
 from setuptools import setup
+from setuptools import find_packages
+
+NAME = "devtools"
+PACKAGES = [NAME] + ["%s.%s" % (NAME, i) for i in find_packages(NAME)]
+# print(PACKAGES)
 
 setup(
     name='AIJIdevtools',
-    version='1.1',
+    version='1.3.0',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
-    packages=['devtools'],
+    packages=PACKAGES,
     install_requires=[
         'sh',
         'sqlparse',
-        'termcolor'
+        'termcolor',
     ],
     url='https://github.com/AIJIJI/devtools',
     classifiers=[
