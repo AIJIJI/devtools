@@ -4,14 +4,18 @@ from setuptools import find_packages
 
 NAME = "devtools"
 PACKAGES = [NAME] + ["%s.%s" % (NAME, i) for i in find_packages(NAME)]
-# print(PACKAGES)
+LONG_DESC = '''Some useful helper-funcs for devpers.
+Sub-package is the extension of corresponding package with the same name.
+'''
+
 
 setup(
     name='AIJIdevtools',
-    version='1.3.0',
+    version='1.3.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
+    long_description=LONG_DESC,
     packages=PACKAGES,
     install_requires=[
         'sh',
