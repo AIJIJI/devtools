@@ -11,7 +11,7 @@ Sub-package is the extension of corresponding package with the same name.
 
 setup(
     name='AIJIdevtools',
-    version='1.3.1',
+    version='1.4.1',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',

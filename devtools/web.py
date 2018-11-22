@@ -1,3 +1,4 @@
+from copy import deepcopy
 from urllib.parse import quote, urljoin, urlencode
 from itertools import chain
 
@@ -7,7 +8,7 @@ def merge_fields(request):
     data = {}
     data.update(request.values.to_dict())
     data.update(request.get_json(force=True, silent=True) or {})
-    return data
+    return deepcopy(data)
 
 
 def create_url(base, *query, path=None, params={}):

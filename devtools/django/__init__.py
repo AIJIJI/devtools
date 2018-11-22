@@ -1,11 +1,7 @@
 from typing import Dict, List
 from operator import or_
 from functools import reduce
-
-try:
-    from django.db.models import Q
-except ModuleNotFoundError:
-    pass
+from django.db.models import Q
 
 
 def Q_any(key_list_maps: Dict[str, List]):

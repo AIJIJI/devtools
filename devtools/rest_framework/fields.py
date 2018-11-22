@@ -1,10 +1,6 @@
 import re
 from ipaddress import ip_address
-
-try:
-    from rest_framework.serializers import Field, ValidationError
-except ModuleNotFoundError:
-    Field = object
+from rest_framework.serializers import Field, ValidationError
 
 
 class MegaByteField(Field):
