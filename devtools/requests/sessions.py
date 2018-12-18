@@ -30,5 +30,6 @@ class JwtSession(Session):
         resp = super().request(method, url, **kwargs)
         if resp.status_code == 401:
             self.get_token()
+            kwargs['headers']["Authorization"] = f"JWT {self.token}"
             resp = super().request(method, url, **kwargs)
         return resp
