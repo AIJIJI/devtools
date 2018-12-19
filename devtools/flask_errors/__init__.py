@@ -8,7 +8,7 @@ from devtools.web import merge_fields
 
 def http_exception_handler(error, debug):
     code = getattr(error, 'code', 500)
-    if str(code).startswith('5'):
+    if debug or str(code).startswith('5'):
         description = json.dumps(merge_fields(request), indent=4)
         current_app.logger.error(description, exc_info=True)
         if debug:
