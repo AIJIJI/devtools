@@ -1,5 +1,11 @@
 # Compatibility for version < 1.1
-from devtools.cache import timed_cache
-from devtools.cli import warn
+from warnings import warn
 
-warn('module timed_cache is deprecated, use module cache instead.')
+
+def __getattr__(name):
+    if name == 'timed_cache':
+        warn(f"{name} is deprecated", DeprecationWarning)
+        from devtools.cache import timed_cache
+        return timed_cache
+    else:
+        raise AttributeError(f"module {__name__} has no attribute {name}")

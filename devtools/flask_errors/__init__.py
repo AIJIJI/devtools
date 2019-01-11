@@ -8,12 +8,12 @@ from devtools.web import merge_fields
 
 def http_exception_handler(error, debug):
     code = getattr(error, 'code', 500)
-    if debug or str(code).startswith('5'):
-        description = json.dumps(merge_fields(request), indent=4)
+    description = json.dumps(merge_fields(request), indent=4)
+    if str(code).startswith('5'):
         current_app.logger.error(description, exc_info=True)
-        if debug:
-            print(description)
-            print(format_exc())
+    if debug:
+        print(description)
+        print(format_exc())
     return jsonify(
         name=getattr(error, 'name', ''),
         description=getattr(error, 'description', ''),
