@@ -11,7 +11,7 @@ Sub-package is the extension of corresponding package with the same name.
 
 setup(
     name='AIJIdevtools',
-    version='1.4.4',
+    version='1.4.5',
     author='AIJI',
     author_email='thecrazyaiji@gmail.com',
     description='Some useful helper-funcs for devpers',
@@ -21,6 +21,7 @@ setup(
         'sh',
         'sqlparse',
         'termcolor',
+        'pyJWT',
         'requests',
     ],
     url='https://github.com/AIJIJI/devtools',
@@ -28,6 +29,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
-        "Development Status :: 1 - Planning"
+        "Development Status :: 3 - Alpha"
     ]
 )
