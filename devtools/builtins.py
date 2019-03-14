@@ -44,7 +44,7 @@ class Dict(UserDict):
         """
         return {value: key for key, value in self.items()}
 
-    def find(dictionary, element):
+    def find(self, element):
         """
         Returns a key whose value in `dictionary` is `element`
         or, if none exists, None.
@@ -54,16 +54,16 @@ class Dict(UserDict):
             3
             >>> find(d, 5)
         """
-        for key, value in dictionary.items():
+        for key, value in self.items():
             if element is value:
                 return key
 
 
-builtins.list = List
-builtins.dict = Dict
-
 
 if __name__ == '__main__':
+
+    builtins.list = List
+    builtins.dict = Dict
     print(list)
     print(list(['a', 'b', 'c']).partition(2))
     print([].__class__)

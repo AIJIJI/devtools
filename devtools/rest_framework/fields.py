@@ -18,9 +18,9 @@ class MegaByteField(Field):
                 if match.group(2) == "M":
                     return value
                 if match.group(2) == "G":
-                    return value * 1024
+                    return value * 1000
                 if match.group(2) == "K":
-                    return value // 1024
+                    return value // 1000
             else:
                 raise ValidationError("illegal size format")
         else:
