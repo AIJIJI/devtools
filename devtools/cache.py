@@ -20,6 +20,7 @@ def timed_cache(maxsize=128, typed=False, **timedelta_kwargs):
                 f.cache_clear()
                 next_update = now + update_delta
             return f(*args, **kwargs)
+        _wrapped.cache_clear = f.cache_clear
         return _wrapped
     return _wrapper
 
