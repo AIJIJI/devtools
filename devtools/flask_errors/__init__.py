@@ -17,6 +17,7 @@ def http_exception_handler(error, debug):
     return jsonify(
         name=getattr(error, 'name', ''),
         description=getattr(error, 'description', ''),
+        message=getattr(error, 'description', ''),
         path=request.path), code
 
 
