@@ -28,7 +28,7 @@ def common_exception_handler(error, debug):
         print(req)
         print(format_exc())
     return jsonify(
-        message='Something wrong...',
+        message=str(error),
         error=str(error)), 500
 
 
